@@ -6,21 +6,21 @@ from redditHelpers import sanitize, markovComments, getCommentsText
 
 REDDIT_USERNAME = ''
 REDDIT_PASSWORD = ''
-try:
-	from settings import *
-except ImportError:
-	pass
-
 DEBUG = False
 REMEMBER_HIT = True
-TARGET_REDDIT = 'circlejerk'
-NEW_SUBMISSIONS_REDDIT = 'politics'
+TARGET_REDDIT = ''
+NEW_SUBMISSIONS_REDDIT = ''
 SUBMISSIONS_TO_MONITOR = 5
 MONITOR_INTERVAL = 30 # seconds
 NEW_SUBMISSION_INTERVAL = 3600 # seconds
 COMMENT_THRESHOLD = 25
 PICKLE_FILE_SUBMISSIONS = 'hitSubmissions.pkl'
 PICKLE_FILE_COMMENTS = 'hitComments.pkl'
+
+try:
+	from settings import *
+except ImportError:
+	pass
 
 r = reddit.Reddit(user_agent='reader')
 r.login(REDDIT_USERNAME, REDDIT_PASSWORD)
