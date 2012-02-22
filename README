@@ -1,0 +1,3 @@
+# Reddit Markov
+Reads comments from a target subreddit into a Markov Chain in order to generate
+new comments.
