@@ -36,8 +36,8 @@ class MarkovGrapher:
 
 		for follower in self.markov.freqMap[starter]:
 			if follower not in referenced:
-				referenced = self.traverseChainHelper(follower, referenced)
 				referenced.add(follower)
+				referenced = self.traverseChainHelper(follower, referenced)
 
 		return referenced
 

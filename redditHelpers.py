@@ -12,13 +12,12 @@ def sanitize(content):
 
 	return content
 
+# TODO: refactoring:
 def markovComments(comments):
-	words = comments.split(' ');
-	startWord = random.choice(words)
-	while not startWord[0].isupper():
-		startWord = random.choice(words)
-
+	words = comments.split(' ')
 	m = Markov(words)
+	startWord = random.choice(m.getStartingUnits())
+
 	chain = m.getNextSentence(startWord, 20)
 	sentence = startWord
 	for word in chain:
@@ -30,7 +29,7 @@ def getCommentsText(comments):
 	allcomments = ''
 	for comment in comments:
 		try:
-			allcomments += comment.body.encode('ascii', 'ignore')
+			allcomments += comment.body.encode('ascii', 'ignore') + ' '
 		except Exception: # some comments are really "MoreComments" with no body. This takes care of it.
 			continue
 

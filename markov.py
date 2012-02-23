@@ -34,7 +34,7 @@ class Markov:
 																		 # note: we use units[-2] because split always makes units[-1] the empty string.
 	
 	def getStartingUnits(self, threshold=None):
-		"""Returns a potential "starting" unit (defined as a unit that follows one
+		"""Returns potential "starting" units (defined as a unit that follows one
 		of the ENDING_PUNCT punctuation marks and starts with an uppercase letter).
 		If threshold is specified, will only returns units with >= threshold number
 		of possible following units.  If no such unit exists, returns None."""
