@@ -10,8 +10,9 @@ class MarkovGrapher:
 		# node definitions
 		nodes = set()
 		starters = self.markov.getStartingUnits()
-		for starter in starters:
-			nodes = nodes.union(self.traverseChain(starter))
+		#for starter in starters:
+		#	nodes = nodes.union(self.traverseChain(starter))
+		nodes = self.traverseChain(self.markov)
 
 		# edge definitions
 		edges = set()
@@ -25,21 +26,29 @@ class MarkovGrapher:
 
 		self.printTGF(nodes, edges)
 
-	def traverseChain(self, starter):
-		"""Returns a set of every unit referencd by starter."""
+	def traverseChain(self, chain):
+		"""Returns a set containing every unit in the markov chain."""
 
-		return self.traverseChainHelper(starter, set([starter]))
+		found = set()
+		unitsRemaining = set()
 
-	def traverseChainHelper(self, starter, referenced):
-		"""Recursive component of traverseChain. referenced is a set of all words
-		referenced up to this point."""
+		# load first level of keys
+		for key in self.markov.freqMap.keys():
+			found.add(key)
+			for futureUnit in self.markov.freqMap[key]:
+				unitsRemaining.add(key)
 
-		for follower in self.markov.freqMap[starter]:
-			if follower not in referenced:
-				referenced.add(follower)
-				referenced = self.traverseChainHelper(follower, referenced)
+		# load all referenced keys, quote-unquote recursively
+		while len(unitsRemaining) > 0:
+			thisUnit = unitsRemaining.pop()
+			for nextUnit in self.markov.freqMap[thisUnit]:
+				if nextUnit not in found:
+					found.add(nextUnit)
 
-		return referenced
+					for futureUnit in self.markov.freqMap[nextUnit]:
+						unitsRemaining.add(futureUnit)
+
+		return found
 
 	def printTGF(self, nodes, edges):
 		"""Outputs the given nodes and edges in Trivial Graph Format.

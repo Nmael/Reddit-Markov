@@ -14,11 +14,10 @@ r = reddit.Reddit(user_agent='reader')
 r.login(REDDIT_USERNAME, REDDIT_PASSWORD)
 
 text = ''
-submissions = r.get_subreddit('all').get_top(limit=10)
+submissions = r.get_subreddit('all').get_top(limit=1)
 for submission in submissions:
 	text += getCommentsText(submission.comments) + ' '
 
-print text
-#m = Markov(text.split(' '))
-#mg = MarkovGrapher(m)
-#mg.graph()
+m = Markov(text.split(' '))
+mg = MarkovGrapher(m)
+mg.graph()

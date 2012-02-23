@@ -1,9 +1,8 @@
 import random
 import string
 
-ENDING_PUNCT = ['.', '!', '?']
-
 class Markov:
+	ENDING_PUNCT = ['.', '!', '?']
 	units = []
 	freqMap = dict()
 
@@ -16,10 +15,10 @@ class Markov:
 		units is an array. It should contain the "things" that the Chain will try to string together (e.g., words, letters)."""
 
 		for i in range(0, len(units)-1):
-			if units[i] == '': continue # don't bother with empty units
-
 			thisWord = units[i]
 			nextWord = units[i+1]
+
+			if thisWord == '' or nextWord == '': continue # don't bother with empty units
 
 			if thisWord in self.freqMap:
 				if nextWord in self.freqMap[thisWord]:
@@ -30,8 +29,9 @@ class Markov:
 				self.freqMap[thisWord] = dict()
 				self.freqMap[thisWord][nextWord] = 1
 
-		self.freqMap[units[-2]] = dict() # we have no predictions for the final word.
-																		 # note: we use units[-2] because split always makes units[-1] the empty string.
+		if units[-2] != '':
+			self.freqMap[units[-2]] = dict() # we have no predictions for the final word.
+																			 # note: we use units[-2] because split always makes units[-1] the empty string.
 	
 	def getStartingUnits(self, threshold=None):
 		"""Returns potential "starting" units (defined as a unit that follows one
@@ -45,12 +45,14 @@ class Markov:
 				starters.append(self.units[0])
 
 		for thisUnit in self.freqMap:
-			for punct in ENDING_PUNCT:
+			for punct in self.ENDING_PUNCT:
 				if thisUnit[-1] == punct: # this unit ends a sentence; try to add all its followers
 					for followingUnit in self.freqMap[thisUnit]:
 						if threshold == None or threshold <= len(self.freqMap[followingUnit]): # reject if under threshold
 							if followingUnit[0] in string.uppercase and followingUnit not in starters: # must start with uppercase
 								starters.append(followingUnit)
+
+					break
 
 		if len(starters) == 0: return None
 		return starters
