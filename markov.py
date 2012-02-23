@@ -10,6 +10,15 @@ class Markov:
 		self.units = units
 		self.generateFreqMap(units)
 	
+	def isEndingUnit(self, unit):
+		if len(unit) <= 0: return
+
+		for punct in self.ENDING_PUNCT:
+			if unit[-1] == punct:
+				return True
+
+		return False
+	
 	def generateFreqMap(self, units):
 		"""Generates the Markov Chain as a dictionary: {unit: {followingUnit1: Probability, followingUnit2: Probability}}
 		units is an array. It should contain the "things" that the Chain will try to string together (e.g., words, letters)."""
@@ -18,7 +27,8 @@ class Markov:
 			thisWord = units[i]
 			nextWord = units[i+1]
 
-			if thisWord == '' or nextWord == '': continue # don't bother with empty units
+			if thisWord == '' or nextWord == '' or self.isEndingUnit(thisWord):
+				continue # don't bother with empty units/ending units
 
 			if thisWord in self.freqMap:
 				if nextWord in self.freqMap[thisWord]:

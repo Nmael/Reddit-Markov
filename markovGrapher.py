@@ -8,16 +8,15 @@ class MarkovGrapher:
 
 	def graph(self):
 		# node definitions
-		nodes = set()
-		starters = self.markov.getStartingUnits()
-		#for starter in starters:
-		#	nodes = nodes.union(self.traverseChain(starter))
 		nodes = self.traverseChain(self.markov)
 
 		# edge definitions
 		edges = set()
 		for node in nodes:
 			totalEvents = 0.0
+			if node not in self.markov.freqMap.keys(): # end nodes have no edges
+				break
+
 			for follower in self.markov.freqMap[node]: # count number of words this starter links to
 				totalEvents += self.markov.freqMap[node][follower]
 
@@ -34,18 +33,24 @@ class MarkovGrapher:
 
 		# load first level of keys
 		for key in self.markov.freqMap.keys():
-			found.add(key)
 			for futureUnit in self.markov.freqMap[key]:
+				found.add(key)
 				unitsRemaining.add(key)
 
 		# load all referenced keys, quote-unquote recursively
 		while len(unitsRemaining) > 0:
 			thisUnit = unitsRemaining.pop()
+			if thisUnit not in self.markov.freqMap.keys(): # ending unit
+				break
+
 			for nextUnit in self.markov.freqMap[thisUnit]:
 				if nextUnit not in found:
 					found.add(nextUnit)
 
-					for futureUnit in self.markov.freqMap[nextUnit]:
+				if nextUnit not in self.markov.freqMap.keys():
+					break
+
+				for futureUnit in self.markov.freqMap[nextUnit]:
 						unitsRemaining.add(futureUnit)
 
 		return found
