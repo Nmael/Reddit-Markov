@@ -110,3 +110,33 @@ class Markov:
 			lastWord = newWord
 			lastChar = lastWord[len(lastWord)-1]
 			i += 1
+
+	def traverseChain(self):
+		"""Returns a set containing every unit in the markov chain."""
+
+		found = set()
+		unitsRemaining = set()
+
+		# load first level of keys
+		for key in self.freqMap.keys():
+			for futureUnit in self.freqMap[key]:
+				found.add(key)
+				unitsRemaining.add(key)
+
+		# load all referenced keys, quote-unquote recursively
+		while len(unitsRemaining) > 0:
+			thisUnit = unitsRemaining.pop()
+			if thisUnit not in self.freqMap.keys(): # ending unit
+				break
+
+			for nextUnit in self.freqMap[thisUnit]:
+				if nextUnit not in found:
+					found.add(nextUnit)
+
+				if nextUnit not in self.freqMap.keys():
+					break
+
+				for futureUnit in self.freqMap[nextUnit]:
+						unitsRemaining.add(futureUnit)
+
+		return found

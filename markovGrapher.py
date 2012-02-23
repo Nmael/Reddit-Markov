@@ -8,7 +8,7 @@ class MarkovGrapher:
 
 	def graph(self):
 		# node definitions
-		nodes = self.traverseChain(self.markov)
+		nodes = self.markov.traverseChain()
 
 		# edge definitions
 		edges = set()
@@ -24,36 +24,6 @@ class MarkovGrapher:
 				edges.add((node, follower, str(round(self.markov.freqMap[node][follower] / totalEvents, 3)*100) + '%'))
 
 		self.printTGF(nodes, edges)
-
-	def traverseChain(self, chain):
-		"""Returns a set containing every unit in the markov chain."""
-
-		found = set()
-		unitsRemaining = set()
-
-		# load first level of keys
-		for key in self.markov.freqMap.keys():
-			for futureUnit in self.markov.freqMap[key]:
-				found.add(key)
-				unitsRemaining.add(key)
-
-		# load all referenced keys, quote-unquote recursively
-		while len(unitsRemaining) > 0:
-			thisUnit = unitsRemaining.pop()
-			if thisUnit not in self.markov.freqMap.keys(): # ending unit
-				break
-
-			for nextUnit in self.markov.freqMap[thisUnit]:
-				if nextUnit not in found:
-					found.add(nextUnit)
-
-				if nextUnit not in self.markov.freqMap.keys():
-					break
-
-				for futureUnit in self.markov.freqMap[nextUnit]:
-						unitsRemaining.add(futureUnit)
-
-		return found
 
 	def printTGF(self, nodes, edges):
 		"""Outputs the given nodes and edges in Trivial Graph Format.
